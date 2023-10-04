@@ -29,7 +29,7 @@ def insert(title, desc, uniqueID, invitedUsers, confirmedUsers, humanHappensTime
     conn = sqlite3.connect("db.db")
     cur = conn.cursor()
 
-    cur.executemany('''INSERT INTO oakland (title, desc, uniqueID, invitedUsers, confirmedUsers, humanHappensTime, createTime, closed) VALUES (?, ?, ?, ?, ?, ?, ?)''', ([(title, desc, uniqueID, invitedUsers, confirmedUsers, humanHappensTime, createTime)]))
+    cur.executemany('''INSERT INTO oakland (title, desc, uniqueID, invitedUsers, confirmedUsers, humanHappensTime, createTime, closed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', ([(title, desc, uniqueID, invitedUsers, confirmedUsers, humanHappensTime, createTime, closed)]))
     conn.commit()
     cur.close()
     conn.close()
@@ -64,11 +64,20 @@ def updateConfirmed(id, jsonContent):
     conn.close()
     return
 
-def closeOpenEvnet(id, oneOrZero):
+def closeOpenEvent(id, oneOrZero):
     conn = sqlite3.connect("db.db")
     cur = conn.cursor()
     items = []
     cur.execute('''UPDATE oakland SET closed = ? WHERE uniqueID = ?''', (oneOrZero, id,))
+    cur.close()
+    conn.close()
+    return
+
+def deleteEvent(eventID):
+    conn = sqlite3.connect("db.db")
+    cur = conn.cursor()
+    items = []
+    cur.execute('''DELETE FROM oakland WHERE uniqueID = ?''', (eventID, ))
     cur.close()
     conn.close()
     return

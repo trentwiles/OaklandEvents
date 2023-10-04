@@ -83,20 +83,11 @@ def closeOpenEvent(id, oneOrZero):
     conn.close()
     return
 
-def deleteEvent(eventID):
-    conn = sqlite3.connect("db.db")
-    cur = conn.cursor()
-    items = []
-    cur.execute('''DELETE FROM oakland WHERE uniqueID = ?''', (eventID, ))
-    cur.close()
-    conn.close()
-    return
-
 def deleteAll():
     conn = sqlite3.connect("db.db")
     cur = conn.cursor()
-    items = []
-    cur.execute('''DELETE FROM oakland WHERE 1=1''')
+    sampleTitle = "FBUBBFDJBfewbfwefb"
+    cur.execute('''DELETE FROM oakland WHERE title != ?''', (sampleTitle,))
+    conn.commit()
     cur.close()
     conn.close()
-    return

@@ -44,6 +44,16 @@ def selectEventByID(id):
     conn.close()
     return items
 
+def selectAllEvents():
+    conn = sqlite3.connect("db.db")
+    cur = conn.cursor()
+    items = []
+    for x in cur.execute('''SELECT * FROM oakland'''):
+        items.append(x)
+    cur.close()
+    conn.close()
+    return items
+
 #'UPDATE your_table SET column_name = ? WHERE id = ?', (new_data, id)
 
 def updateInvited(id, jsonContent):
@@ -78,6 +88,15 @@ def deleteEvent(eventID):
     cur = conn.cursor()
     items = []
     cur.execute('''DELETE FROM oakland WHERE uniqueID = ?''', (eventID, ))
+    cur.close()
+    conn.close()
+    return
+
+def deleteAll():
+    conn = sqlite3.connect("db.db")
+    cur = conn.cursor()
+    items = []
+    cur.execute('''DELETE FROM oakland WHERE 1=1''')
     cur.close()
     conn.close()
     return

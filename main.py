@@ -39,10 +39,13 @@ def authorize():
     token = github.authorize_access_token()
     resp = github.get('user', token=token)
     profile = resp.json()
-    # do something with the token and profile
     session['username'] = profile['login']
     return redirect('/')
 
+@app.route("/logout")
+def logout():
+    session.pop('username')
+    return redirect("/")
 
 if __name__ == '__main__':
     app.run(port=5000)

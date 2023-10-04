@@ -3,7 +3,7 @@
     <h1 class="is-size-1 has-text-centered py-6">
         Oakland Events
       </h1>
-      <p class="has-text-centered">Logged in as {{username}}</p>
+      <p class="has-text-centered py-4">Logged in as {{username}}. <a href="/logout">Sign out.</a></p>
     {% for event in events %}
     <p>{{event}}</p>
     {% endfor %}

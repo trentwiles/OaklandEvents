@@ -1,0 +1,11 @@
+{% include 'header.html' %}
+<section class="has-text-centered">
+    <h1 class="is-size-1 has-text-centered py-6">
+        Oakland Events
+      </h1>
+      <p class="has-text-centered">Logged in as {{username}}</p>
+    {% for event in events %}
+    <p>{{event}}</p>
+    {% endfor %}
+</section>
+{% include 'footer.html' %}

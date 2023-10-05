@@ -36,6 +36,16 @@ def welcome():
                 validEvents.append(event)
     return render_template("dash.html", events=validEvents, username=session['username'])
 
+@app.route('/details/<id>')
+def details(id):
+    if 'username' not in session:
+        return render_template("404.html")
+    api = db.selectEventByID(id)
+    # let's assume that only one event will be selected
+    if session['username'] in api[0][3].split(","):
+        return render_template("event.html")
+    return render_template("404.html")
+
 @app.route("/login")
 def login():
     redirect_url = url_for("authorize", _external=True)

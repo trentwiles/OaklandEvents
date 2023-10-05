@@ -1,0 +1,12 @@
+{% include 'header.html' %}
+<h1 class="is-size-1 has-text-centered py-6">
+    Oakland Events
+  </h1>
+  <h2 class="is-size-3 has-text-centered py-6">
+    {% if username %}
+    Not found, you may not have access to this page. Signed in as {{username}} <a href="/logout">(logout)</a>
+    {% else %}
+    Not found, you may not have access to this page. Do you need to <a href="/login"></a>?
+    {% endif %}
+  </h2>
+{% include 'footer.html' %}

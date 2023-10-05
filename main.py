@@ -37,18 +37,31 @@ github = oauth.register(
 
 @app.route('/')
 def welcome():
+    # if user isn't logged in, return 404/unauthed page
     if 'username' not in session:
         return render_template("index.html")
+    
+    # by default, we assume that the user has been invited to at least one event
+    notInAnyEvents = False
+
     api = db.selectAllEvents()
+    # var to hold the events the user is in
     validEvents = []
+    # read through each event...
     for event in api:
+        # break down the user invited to the event
         for user in event[3].split(","):
-            if user == session['username'] and event[7] != 1: # last item here makes sure the event isn't closed
+            # if the user is in the event, and the event isn't closed, then add the event to the list
+            if user == session['username'] and event[7] != 1:
                 validEvents.append(event)
-    return render_template("dash.html", events=validEvents, username=session['username'])
+    # the events will be iterated through on the / page
+    if len(validEvents) == 0:
+        notInAnyEvents = True
+    return render_template("dash.html", events=validEvents, username=session['username'], notInAnyEvents=notInAnyEvents)
 
 @app.route('/details/<id>')
 def details(id):
+    # if user isn't logged in, return 404/unauthed page
     if 'username' not in session:
         return render_template("404.html")
     api = db.selectEventByID(id)
@@ -59,41 +72,63 @@ def details(id):
 
 @app.route('/create', methods=["GET"])
 def create():
+    # if user isn't logged in, return 404/unauthed page
     if 'username' not in session:
         return render_template("404.html")
     return render_template("createEvent.html")
 
 @app.route('/create', methods=["POST"])
 def createPOST():
+    # again, while it's not likley that the user will have logged out before sending in the form
+    # it can't hurt to check again
     if 'username' not in session:
         return render_template("404.html")
+    # get inputs and variables
     title = request.form.get("title")
     description = request.form.get("desc")
     whenAndWhere = request.form.get("where")
+
+    # validate
+    if title == None or description == None or whenAndWhere == None:
+        # make this fancier in the future
+        return "Invalid input, you're missing something"
+
     uniqueID = generateRandom(10)
     timestamp = round(time.time())
     invited = request.form.get("invited")
     created = session['username']
+
+    # once everything has been collected, send it to the database
     db.insert(title, description, uniqueID, parseInvited(invited, session['username']), session['username'], whenAndWhere, timestamp, 0, created)
     return redirect("/?created=true")
 
 @app.route("/login")
 def login():
+    # send to Github for oauth
     redirect_url = url_for("authorize", _external=True)
     return github.authorize_redirect(redirect_url)
 
 @app.route("/authorize")
 def authorize():
+    # work with github to log the user in
+
+    # for now, the token doesn't matter
     token = github.authorize_access_token()
     resp = github.get('user', token=token)
     profile = resp.json()
+
+    # set the user in the cookie to the user github gave us
     session['username'] = profile['login']
     return redirect('/')
 
 @app.route("/logout")
 def logout():
+
+    # delete the username from the session
     session.pop('username')
+
+    # send back to the homepage (which has the login button)
     return redirect("/")
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=5000, host='0.0.0.0')

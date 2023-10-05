@@ -3,6 +3,11 @@
   <h1 class="is-size-1 has-text-centered py-6">
     Oakland Events
   </h1>
+
+  {% if notInAnyEvents %}
+  <h1 class="is-size-4 has-text-centered py6">Sorry, you don't appear to be invited to any active events.</h1>
+  {% endif %}
+
   <p class="has-text-centered py-4">Logged in as {{username}}. <a href="/logout">Sign out.</a></p>
   {% for event in events %}
   <div class="columns mb-6">
@@ -39,6 +44,7 @@
     </div>
     </div>
     {% endfor %}
-    
+    <!-- maybe restrict this to certain people in the future -->
+    <a class="button is-success is-large" href="/create">New Event</a>
 </section>
 {% include 'footer.html' %}

@@ -1,0 +1,48 @@
+{% include 'header.html' %}
+<h1 class="is-size-1 has-text-centered py-6">
+    Oakland Events
+  </h1>
+  <h2 class="is-size-3 has-text-centered py-6">
+    Create Event
+  </h2>
+  <div class="field">
+    <label class="label">Event Name</label>
+    <div class="control">
+      <input class="input" type="text"  name="event" id="event">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">When and where? (ie. Meet at the T at 6PM)</label>
+    <div class="control">
+      <input class="input" type="text"  name="where" id="where">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Event Description</label>
+    <div class="control">
+      <textarea class="textarea" placeholder="Textarea" name="desc"></textarea>
+    </div>
+  </div>
+
+  
+  
+  <div class="field">
+    <div class="control">
+      <label class="checkbox">
+        <input type="checkbox">
+        I agree to the <a href="#">terms and conditions</a>
+      </label>
+    </div>
+  </div>
+    
+  <div class="field is-grouped">
+    <div class="control">
+      <button class="button is-link">Submit</button>
+    </div>
+    <div class="control">
+      <button class="button is-link is-light">Cancel</button>
+    </div>
+  </div>
+{% include 'footer.html' %}

@@ -46,6 +46,12 @@ def details(id):
         return render_template("event.html")
     return render_template("404.html")
 
+@app.route('/details/<id>')
+def details(id):
+    if 'username' not in session:
+        return render_template("404.html")
+    return render_template("createEvent.html")
+
 @app.route("/login")
 def login():
     redirect_url = url_for("authorize", _external=True)

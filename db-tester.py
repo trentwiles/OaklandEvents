@@ -1,26 +1,19 @@
 import db
-import json
+# import json
+# import ast
 
-guestList = json.dumps(["trentwiles"])
-#print(guestList)
+# guestList = json.dumps(["trentwiles"])
 
-#db.create()
+#db.insert("Big City Night: Scooter Race", "To sum it up, we're gonna race around on scooters around the city and play hide and seek", "fiNSkf", "trentwiles", "trentwiles,", "10/7 @7PM Rockridge Bart", 4328923, 0)
 
-#db.deleteAll()
-db.deleteAll()
-#print(db.selectAllEvents())
-#db.deleteEvent("nWUFANKdbf")
-#db.deleteAll()
-#print(db.selectEventByID('nWUFANKbf'))
-# #db.create()
-#db.insert("Small City Night", "Alameda trip for the weekend", "nWUFANKdbf", guestList, "{}", "10/17 @ 3PM", 1696445535, 0)
-#print(db.selectEventByID('nWUFANKdbf')[0][3])
-# #print(json.loads(db.selectEventByID('nWUFANKbf')[0][3]))
+# gL = db.selectEventByID("nwiqSA")
 
-# # x = json.loads()
-# # for users in x:
-# #     print(x)
+# # converts the string into the list
+# for x in ast.literal_eval(gL[0][3]):
+#     print(x)
 
-# # x = x.append('torvalds')
+# x = ast.literal_eval(gL[0][3]).append("torvalds")
 
-# # db.updateInvited(x)
+# db.deleteAll()
+print(db.selectEventByID("fiNSkf")[0][3].split(","))
+print(db.updateInvited("sdf", "nwiqSA"))

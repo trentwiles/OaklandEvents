@@ -54,9 +54,10 @@ def selectAllEvents():
     conn.close()
     return items
 
+
 #'UPDATE your_table SET column_name = ? WHERE id = ?', (new_data, id)
 
-def updateInvited(id, jsonContent):
+def updateInvited(jsonContent, id):
     conn = sqlite3.connect("db.db")
     cur = conn.cursor()
     items = []

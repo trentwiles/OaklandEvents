@@ -1,5 +1,6 @@
 from flask import Flask, render_template, session, request, redirect, url_for
 import json
+import db
 from authlib.integrations.flask_client import OAuth
 
 
@@ -27,7 +28,13 @@ github = oauth.register(
 def welcome():
     if 'username' not in session:
         return render_template("index.html")
-    return render_template("dash.html", events=["ok", "ok2"], username=session['username'])
+    api = db.selectAllEvents()
+    validEvents = []
+    for event in api:
+        for user in event[3].split(","):
+            if user == session['username']:
+                validEvents.append(event)
+    return render_template("dash.html", events=validEvents, username=session['username'])
 
 @app.route("/login")
 def login():

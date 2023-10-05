@@ -1,11 +1,39 @@
 {% include 'header.html' %}
 <section class="has-text-centered">
-    <h1 class="is-size-1 has-text-centered py-6">
-        Oakland Events
-      </h1>
-      <p class="has-text-centered py-4">Logged in as {{username}}. <a href="/logout">Sign out.</a></p>
-    {% for event in events %}
-    <p>{{event}}</p>
+  <h1 class="is-size-1 has-text-centered py-6">
+    Oakland Events
+  </h1>
+  <p class="has-text-centered py-4">Logged in as {{username}}. <a href="/logout">Sign out.</a></p>
+  {% for event in events %}
+  <div class="columns mb-6">
+    <div class="column">
+      <!-- Filler/Padding for left side -->
+    </div>
+    <div class="column">
+      <div class="card">
+        <div class="card-content">
+          <p class="title">
+            {{event[0]}}
+          </p>
+          <p class="subtitle">
+            {{event[5]}}
+          </p>
+        </div>
+        <footer class="card-footer">
+          <p class="card-footer-item">
+            <a class="button" href="/details/{{event[2]}}">More Information</a>
+          </p>
+          <p class="card-footer-item">
+            <a class="button" href="/details/{{event[2]}}">Register</a>
+          </p>
+        </footer>
+      </div>
+    </div>
+    <div class="column">
+      <!-- Filler/Padding for left side -->
+    </div>
+    </div>
     {% endfor %}
+    
 </section>
 {% include 'footer.html' %}

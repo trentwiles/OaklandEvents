@@ -2,12 +2,23 @@ from flask import Flask, render_template, session, request, redirect, url_for
 import json
 import db
 from authlib.integrations.flask_client import OAuth
-
+import random
+import time
 
 app = Flask(__name__)
 app.secret_key = json.loads(open('config.json').read())["secret_key"]
 
+def generateRandom(howMany):
+    variables = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+    final = ""
+    for x in range(howMany):
+        final += variables[random.randint(0, len(variables) - 1)]
+    return final
 
+def parseInvited(raw, username):
+    new = raw.split("\n")
+    new.append(username)
+    return ",".join(new)
 
 oauth = OAuth(app)
 
@@ -43,14 +54,28 @@ def details(id):
     api = db.selectEventByID(id)
     # let's assume that only one event will be selected
     if session['username'] in api[0][3].split(",") and api[0][7] != 1:
-        return render_template("event.html")
+        return render_template("event.html", event=api[0])
     return render_template("404.html")
 
-@app.route('/details/<id>')
-def details(id):
+@app.route('/create', methods=["GET"])
+def create():
     if 'username' not in session:
         return render_template("404.html")
     return render_template("createEvent.html")
+
+@app.route('/create', methods=["POST"])
+def createPOST():
+    if 'username' not in session:
+        return render_template("404.html")
+    title = request.form.get("title")
+    description = request.form.get("desc")
+    whenAndWhere = request.form.get("where")
+    uniqueID = generateRandom(10)
+    timestamp = round(time.time())
+    invited = request.form.get("invited")
+    created = session['username']
+    db.insert(title, description, uniqueID, parseInvited(invited, session['username']), session['username'], whenAndWhere, timestamp, 0, created)
+    return redirect("/?created=true")
 
 @app.route("/login")
 def login():

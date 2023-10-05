@@ -26,6 +26,11 @@
           <p class="card-footer-item">
             <a class="button" href="javascript:signUp('{{event[2]}}')">Register</a>
           </p>
+          {% if username == event[8] %}
+          <p class="card-footer-item">
+            <a class="button" href="javascript:delete('{{event[2]}}')">Delete Event</a>
+          </p>
+          {% endif %}
         </footer>
       </div>
     </div>

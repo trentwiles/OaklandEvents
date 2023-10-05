@@ -32,7 +32,7 @@ def welcome():
     validEvents = []
     for event in api:
         for user in event[3].split(","):
-            if user == session['username']:
+            if user == session['username'] and event[7] != 1: # last item here makes sure the event isn't closed
                 validEvents.append(event)
     return render_template("dash.html", events=validEvents, username=session['username'])
 
@@ -42,7 +42,7 @@ def details(id):
         return render_template("404.html")
     api = db.selectEventByID(id)
     # let's assume that only one event will be selected
-    if session['username'] in api[0][3].split(","):
+    if session['username'] in api[0][3].split(",") and api[0][7] != 1:
         return render_template("event.html")
     return render_template("404.html")
 

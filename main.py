@@ -66,8 +66,12 @@ def details(id):
         return render_template("404.html")
     api = db.selectEventByID(id)
     # let's assume that only one event will be selected
+    # api[0][7] makes sure that only active events are shown
     if session['username'] in api[0][3].split(",") and api[0][7] != 1:
-        return render_template("event.html", event=api[0])
+        numberInvites = len(api[0][3].split(","))
+        numberConfirmed = len(api[0][4].split(","))
+        attendanceRate = round(numberConfirmed/numberInvites * 100, 1)
+        return render_template("event.html", event=api[0], numberInvites=numberInvites, numberConfirmed=numberConfirmed, attendanceRate=attendanceRate)
     return render_template("404.html")
 
 @app.route('/create', methods=["GET"])

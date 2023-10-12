@@ -24,15 +24,18 @@ def getClasses(apiKey):
 
 # cutoff = seconds until a due date for an assignment to be counted
 def getAssignmentsDueSoon(apiKey, classID, cutoff):
-    api = requests.get(BASE_API_URL + "/api/v1/courses/" + classID + "/assignments?access_token=" + apiKey)
+    api = requests.get(BASE_API_URL + "/api/v1/courses/" + str(classID) + "/assignments?access_token=" + apiKey)
     if api.status_code != 200:
         return []
     
     assignmentsDueSoon = []
 
     for task in api.json():
-        epochTimeDueAt = datetime.fromisoformat(task["due_at"]).timestamp()
-        
-        # if the due date for the task is sooner (or equal to) the cutoff, it will take not of it
-        if (round(time.time()) - epochTimeDueAt) <= cutoff:
-            assignmentsDueSoon.append(task)
+        if task["due_at"] != None:
+            epochTimeDueAt = datetime.fromisoformat(task["due_at"]).timestamp()
+            
+            # if the due date for the task is sooner (or equal to) the cutoff, it will take not of it
+            secondsUntilDue = epochTimeDueAt - round(time.time())
+            if secondsUntilDue > 0 and secondsUntilDue <= cutoff:
+                assignmentsDueSoon.append(task)
+    return assignmentsDueSoon

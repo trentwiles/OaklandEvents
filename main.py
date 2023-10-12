@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect, url_for
+from flask import Flask, render_template, session, request, redirect, url_for, Response
 import json
 import db
 from authlib.integrations.flask_client import OAuth
@@ -14,6 +14,9 @@ def generateRandom(howMany):
     for x in range(howMany):
         final += variables[random.randint(0, len(variables) - 1)]
     return final
+
+def jsonResp(input, status):
+    return Response(json.dumps(input), status_code=status, content_type="application/json")
 
 def parseInvited(raw, username):
     new = raw.split("\n")
@@ -73,6 +76,21 @@ def details(id):
         attendanceRate = round(numberConfirmed/numberInvites * 100, 1)
         return render_template("event.html", event=api[0], numberInvites=numberInvites, numberConfirmed=numberConfirmed, attendanceRate=attendanceRate)
     return render_template("404.html")
+
+@app.route("/register", methods=["POST"])
+def register():
+    if 'username' not in session:
+        return jsonResp({"success": "false", "message": "Please sign in"}, 401)
+    if request.form.get("id") == None:
+        return jsonResp({"success": "false", "message": "Please use the id parameter to register for an event"}, 400)
+    id = request.form.get("id")
+
+    api = db.selectEventByID(id)
+
+    try:
+        print(api[0][0])
+    except:
+        return jsonResp({"success": "false", "message": "Sorry, this event is invalid"}, 400)
 
 @app.route('/create', methods=["GET"])
 def create():

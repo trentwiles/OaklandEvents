@@ -4,6 +4,7 @@ import db
 from authlib.integrations.flask_client import OAuth
 import random
 import time
+import instructure
 
 app = Flask(__name__)
 app.secret_key = json.loads(open('config.json').read())["secret_key"]
@@ -22,6 +23,51 @@ def parseInvited(raw, username):
     new = raw.split("\n")
     new.append(username)
     return ",".join(new)
+
+def determineIfAnyWorkIsDueNearEvent(eventID, dayThreshold):
+    # How this works:
+    # 1. Gets the event time from the database
+    # 2. Uses the Canvas API to check if any assignments are due up to 2 days after the event
+    # 3. Returns a list of their names (if any)
+    dbLookup = db.selectEventByID(eventID)
+    try:
+        # time when event will happen
+        seconds = dbLookup[0][6]
+    except:
+        raise ValueError("Event doesn't exist or has date has already passed.")
+    
+    # make sure the event isn't closed and that it already hasn't happened
+    secondsUntilItHappens = seconds - round(time.time())
+    if (dbLookup[0][7] != 1) and secondsUntilItHappens > 0:
+        
+        # the "threshold" is the time until the event happens, plus how many days after have been set
+        threshold = secondsUntilItHappens + (dayThreshold * 86400)
+
+        canvas_api_key = json.loads(open("config.json").read())["canvas"]
+
+        classesInvolved = []
+
+        # go through each class in canvas and get the ID
+        for classID in instructure.getClasses(canvas_api_key):
+            # then determines if any assingments in each class are due within the t
+            for task in instructure.getAssignmentsDueSoon(canvas_api_key, classID, threshold):
+                # and finally adds the details of it to the list
+                classesInvolved.append(task)
+        
+        # now, see if there were any classes
+        if len(classesInvolved) != 0:
+            htmlReturnString = "<strong>Warning: Work due within " + str(dayThreshold) + " day(s) of event.<strong>Details:<br>"
+            for classMetaData in classesInvolved:
+                htmlReturnString += "<a href='" + classMetaData["html_url"] + "' target='_blank'>" + classMetaData["name"] + "</a><br>"
+        else:
+            htmlReturnString = "<p>There is no work due within " + str(dayThreshold) + " day(s) of event.</p>"
+        
+        return htmlReturnString
+    else:
+        raise ValueError("Event doesn't exist or has date has already passed.")
+
+
+
 
 oauth = OAuth(app)
 

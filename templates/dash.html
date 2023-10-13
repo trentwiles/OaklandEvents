@@ -4,6 +4,31 @@
     Oakland Events
   </h1>
 
+  {% if howManyDue > 0 %}
+  <article class="message is-warning mx-6" id="warningmsg">
+    <div class="message-header">
+      <p>Attention</p>
+      <a href="javascript:close()"><button class="delete" aria-label="delete"></button></a>
+    </div>
+    <div class="message-body">
+      You appear to have {{howManyDue}} assignment(s) due on Canvas within the next three days. They are: <br>
+      <ul>
+        {% for task in stuffDue %}
+        <li>
+          <a href="{{task['url']}}" target="_blank">{{task['name']}}</a>
+        </li>
+        <br>
+        {% endfor %}
+      </ul>
+    </div>
+  </article>
+  <script>
+    function close() {
+      document.getElementById("warningmsg").style.display = 'none';
+    }
+  </script>
+  {% endif %}
+
   {% if notInAnyEvents %}
   <h1 class="is-size-4 has-text-centered py6">Sorry, you don't appear to be invited to any active events.</h1>
   {% endif %}
@@ -42,9 +67,9 @@
     <div class="column">
       <!-- Filler/Padding for right side -->
     </div>
-    </div>
-    {% endfor %}
-    <!-- maybe restrict this to certain people in the future -->
-    <a class="button is-success is-large" href="/create">New Event</a>
+  </div>
+  {% endfor %}
+  <!-- maybe restrict this to certain people in the future -->
+  <a class="button is-success is-large" href="/create">New Event</a>
 </section>
 {% include 'footer.html' %}

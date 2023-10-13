@@ -10,6 +10,7 @@ app = Flask(__name__)
 app.secret_key = json.loads(open('config.json').read())["secret_key"]
 canvasKey = json.loads(open('config.json').read())["canvas"]
 CANVAS_DAYS_THRESHOLD = 3
+CANVAS_DAYS_THRESHOLD_ENGLISH = "three"
 
 def generateRandom(howMany):
     variables = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"

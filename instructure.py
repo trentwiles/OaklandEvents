@@ -39,3 +39,13 @@ def getAssignmentsDueSoon(apiKey, classID, cutoff):
             if secondsUntilDue > 0 and secondsUntilDue <= cutoff:
                 assignmentsDueSoon.append(task)
     return assignmentsDueSoon
+
+# view details of assignments due within x days
+def getAssignmentsDueWithinDays(apiKey, days):
+    tasks = []
+
+    for x in getClasses(apiKey):
+        for task in getAssignmentsDueSoon(apiKey, x, days * 86400):
+            tasks.append({"name": task["name"], "url": task["html_url"]})
+
+    return tasks

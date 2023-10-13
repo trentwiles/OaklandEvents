@@ -8,6 +8,8 @@ import instructure
 
 app = Flask(__name__)
 app.secret_key = json.loads(open('config.json').read())["secret_key"]
+canvasKey = json.loads(open('config.json').read())["canvas"]
+CANVAS_DAYS_THRESHOLD = 3
 
 def generateRandom(howMany):
     variables = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
@@ -67,8 +69,6 @@ def determineIfAnyWorkIsDueNearEvent(eventID, dayThreshold):
         raise ValueError("Event doesn't exist or has date has already passed.")
 
 
-
-
 oauth = OAuth(app)
 
 github = oauth.register(
@@ -106,7 +106,11 @@ def welcome():
     # the events will be iterated through on the / page
     if len(validEvents) == 0:
         notInAnyEvents = True
-    return render_template("dash.html", events=validEvents, username=session['username'], notInAnyEvents=notInAnyEvents)
+
+    stuffDue = instructure.getAssignmentsDueWithinDays(canvasKey, CANVAS_DAYS_THRESHOLD)
+    howManyDue = len(stuffDue)
+
+    return render_template("dash.html", events=validEvents, username=session['username'], notInAnyEvents=notInAnyEvents, stuffDue=stuffDue, howManyDue=howManyDue)
 
 @app.route('/details/<id>')
 def details(id):
@@ -152,7 +156,7 @@ def createPOST():
     if 'username' not in session:
         return render_template("404.html")
     # get inputs and variables
-    title = request.form.get("title")
+    title = request.form.get("event")
     description = request.form.get("desc")
     whenAndWhere = request.form.get("where")
 

@@ -24,7 +24,7 @@ def cache(username, instructureDataResponse):
         os.remove("cache/" + username + "-canvas.json")
     
     ts = round(time.time())
-    with open("cache/" + username + "-canvas.json") as w:
+    with open("cache/" + username + "-canvas.json", "a") as w:
         w.write(json.dumps({"age": ts, "data": json.dumps(instructureDataResponse)}))
     
     return True

@@ -2,5 +2,6 @@
     "secret_key": "FLASK_SECRET",
     "gh_c_id": "GITHUB_CLIENT_ID",
     "gh_s_id": "GITHUB_SECRET_ID",
-    "canvas": "CANVAS_API_KEY_TOKEN"
+    "canvas": "CANVAS_API_KEY_TOKEN",
+    "actransit": "AC_TRANSIT_API_TOKEN"
 }

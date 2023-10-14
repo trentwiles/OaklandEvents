@@ -25,6 +25,8 @@ def cache(username, instructureDataResponse):
     
     ts = round(time.time())
     with open("cache/" + username + "-canvas.json", "a") as w:
-        w.write(json.dumps({"age": ts, "data": json.dumps(instructureDataResponse)}))
+        w.write(json.dumps({"age": ts, "data": instructureDataResponse}))
     
     return True
+
+# to do... read the data

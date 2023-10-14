@@ -11,8 +11,10 @@ app.secret_key = json.loads(open('config.json').read())["secret_key"]
 canvasKey = json.loads(open('config.json').read())["canvas"]
 CANVAS_DAYS_THRESHOLD = 3
 CANVAS_DAYS_THRESHOLD_ENGLISH = "three"
+CANVAS_API_KEY = json.loads(open("config.json").read())["canvas"]
 
 def generateRandom(howMany):
+    # creates a random string, howMany being how many chars the string should have
     variables = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
     final = ""
     for x in range(howMany):
@@ -20,14 +22,23 @@ def generateRandom(howMany):
     return final
 
 def jsonResp(input, status):
+    # Helper function to create JSON responses for API methods
     return Response(json.dumps(input), status_code=status, content_type="application/json")
 
 def parseInvited(raw, username):
+    # In the database, users who are invited/confirmed are stored like so:
+    # user1,user2,user3
+    # So this helper function justinserted from the HTML form into that format, plus adds the username of 
+    # the form submitter
     new = raw.split("\n")
     new.append(username)
     return ",".join(new)
 
 def determineIfAnyWorkIsDueNearEvent(eventID, dayThreshold):
+    # **Important Note**
+    # This method is currently broken as there is nothing entering the epoch time of an event taking place into
+    # the database. Until that is fixxed, this is not usable (however, in theory, it does work)
+
     # How this works:
     # 1. Gets the event time from the database
     # 2. Uses the Canvas API to check if any assignments are due up to 2 days after the event
@@ -46,14 +57,12 @@ def determineIfAnyWorkIsDueNearEvent(eventID, dayThreshold):
         # the "threshold" is the time until the event happens, plus how many days after have been set
         threshold = secondsUntilItHappens + (dayThreshold * 86400)
 
-        canvas_api_key = json.loads(open("config.json").read())["canvas"]
-
         classesInvolved = []
 
         # go through each class in canvas and get the ID
-        for classID in instructure.getClasses(canvas_api_key):
+        for classID in instructure.getClasses(CANVAS_API_KEY):
             # then determines if any assingments in each class are due within the t
-            for task in instructure.getAssignmentsDueSoon(canvas_api_key, classID, threshold):
+            for task in instructure.getAssignmentsDueSoon(CANVAS_API_KEY, classID, threshold):
                 # and finally adds the details of it to the list
                 classesInvolved.append(task)
         
@@ -87,7 +96,7 @@ github = oauth.register(
 
 @app.route('/')
 def welcome():
-    # if user isn't logged in, return 404/unauthed page
+    # if user isn't logged in, return login page
     if 'username' not in session:
         return render_template("index.html")
     
@@ -122,6 +131,7 @@ def details(id):
     # let's assume that only one event will be selected
     # api[0][7] makes sure that only active events are shown
     if session['username'] in api[0][3].split(",") and api[0][7] != 1:
+        # .split(",") is used to convert from the database format to python list format
         numberInvites = len(api[0][3].split(","))
         numberConfirmed = len(api[0][4].split(","))
         attendanceRate = round(numberConfirmed/numberInvites * 100, 1)

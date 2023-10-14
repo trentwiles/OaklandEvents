@@ -2,10 +2,12 @@ import canvasCache
 import json
 import instructure
 
-print(canvasCache.checkCacheAge("trentwiles"))
+# print(canvasCache.checkCacheAge("trentwiles"))
 
-canvasKey = json.loads(open("config.json").read())["canvas"]
+# canvasKey = json.loads(open("config.json").read())["canvas"]
 
-canvasCache.cache("trentwiles", instructure.getAssignmentsDueWithinDays(canvasKey, 3))
+# canvasCache.cache("trentwiles", instructure.getAssignmentsDueWithinDays(canvasKey, 3))
 
-print(canvasCache.checkCacheAge("trentwiles"))
+# print(canvasCache.checkCacheAge("trentwiles"))
+
+print(canvasCache.readCache("trentwiles"))

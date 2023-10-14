@@ -29,4 +29,7 @@ def cache(username, instructureDataResponse):
     
     return True
 
-# to do... read the data
+def readCache(username):
+    # returns the cache as a instructure.getAssignmentsDueWithinDays() response
+
+    return json.loads(open(f"cache/{username}-canvas.json").read())["data"]

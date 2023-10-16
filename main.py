@@ -24,7 +24,7 @@ def generateRandom(howMany):
 
 def jsonResp(input, status):
     # Helper function to create JSON responses for API methods
-    return Response(json.dumps(input), status_code=status, content_type="application/json")
+    return Response(json.dumps(input), content_type="application/json"), status
 
 def parseInvited(raw, username):
     # In the database, users who are invited/confirmed are stored like so:
@@ -224,6 +224,14 @@ def logout():
 
     # send back to the homepage (which has the login button)
     return redirect("/")
+
+@app.route("/bustCanvasCache")
+def bustCanvasCache():
+    if 'username' not in session:
+        return jsonResp({"status": "error", "message": "Please sign in"}, 401)
+    canvasCache.cache(session['username'], instructure.getAssignmentsDueWithinDays(CANVAS_API_KEY, CANVAS_DAYS_THRESHOLD))
+    return jsonResp({"status": "ok"}, 200)
+    
 
 if __name__ == '__main__':
     app.run(port=5000, host='0.0.0.0')

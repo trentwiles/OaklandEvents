@@ -1,10 +1,11 @@
-from flask import Flask, render_template, session, request, redirect, url_for, Response
+from flask import Flask, render_template, session, request, redirect, url_for, Response, make_response
 import json
 import db
 from authlib.integrations.flask_client import OAuth
 import random
 import time
 import instructure
+import canvasCache
 
 app = Flask(__name__)
 app.secret_key = json.loads(open('config.json').read())["secret_key"]
@@ -117,10 +118,21 @@ def welcome():
     if len(validEvents) == 0:
         notInAnyEvents = True
 
-    stuffDue = instructure.getAssignmentsDueWithinDays(canvasKey, CANVAS_DAYS_THRESHOLD)
+    cacheStatus = canvasCache.checkCacheAge(session['username'])
+    if cacheStatus != -1 and cacheStatus <= 86400:
+        stuffDue = canvasCache.readCache(session['username'])
+        cacheHeader = "HIT"
+    else:
+        stuffDue = instructure.getAssignmentsDueWithinDays(canvasKey, CANVAS_DAYS_THRESHOLD)
+        cacheHeader = "MISS"
+        canvasCache.cache(session['username'], stuffDue)
+        cacheStatus = 0
     howManyDue = len(stuffDue)
 
-    return render_template("dash.html", events=validEvents, username=session['username'], notInAnyEvents=notInAnyEvents, stuffDue=stuffDue, howManyDue=howManyDue)
+    rsp = make_response(render_template("dash.html", events=validEvents, username=session['username'], notInAnyEvents=notInAnyEvents, stuffDue=stuffDue, howManyDue=howManyDue))
+    rsp.headers["x-canvas-cache"] = cacheHeader
+    rsp.headers["age"] = cacheStatus
+    return rsp
 
 @app.route('/details/<id>')
 def details(id):

@@ -32,5 +32,45 @@ def getStationAbbreviations():
         "Concord": "CONC",
         "Daly City": "DALY",
         "Downtown Berkeley": "DBRK",
-        "Dublin/Pleasanton": "DUBL"
+        "Dublin/Pleasanton": "DUBL",
+        "El Cerrito del Norte": "DELN",
+        "El Cerrito Plaza": "PIZA",
+        "Embarcadero (SF)": "EMBR",
+        "Fremont": "FRMT",
+        "Fruitvale (Oakland)": "FTVL",
+        "Glen Park (SF)": "GLEN",
+        "Hayward": "HAYW",
+        "Lafayette": "LAFY",
+        "Lake Merritt (Oakland)": "LAKE",
+        "MacArthur (Oakland)": "MCAR",
+        "Millbrae": "MIBR",
+        "Montgomery St. (SF)": "MONT",
+        "North Berkeley": "NBRK",
+        "North Concord/Martinez": "NCON",
+        "Oakland Int'l Airport": "OAKL",
+        "Orinda": "ORIN",
+        "Pittsburg/Bay Point": "PITT",
+        "Pittsburg Center": "PCTR",
+        "Pleasant Hill": "PHIL",
+        "Powell St. (SF)": "POWL",
+        "Richmond": "RICH",
+        "Rockridge (Oakland)": "ROCK",
+        "San Bruno": "SBRN",
+        "San Leandro": "SANL",
+        "South San Fransisco": "SSAN",
+        "Union City": "UCTY",
+        "Warm Springs/South Fremont": "WARM",
+        "Walnut Creek": "WCRK",
+        "West Dublin": "WDUB",
+        "West Oakland": "WOAK"
     }
+
+def getStationAbbreviationByName(name):
+    return getStationAbbreviations()[name]
+
+def getEnglishStationNameFromAbbreviation(name):
+    list = []
+    for x in getStationAbbreviations().items():
+        if name == x[1]:
+            return x[0]
+    return None

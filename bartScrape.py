@@ -2,6 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
+# Again, this segment of the code has been moved to another repo.
+# For the code, see https://github.com/trentwiles/BARTAPI
+# For the live product, see https://bart.trentwil.es
+
 # Read the bs4 string for the # of cars a train has
 # Samples:
 # (8 car(Three Door Train)

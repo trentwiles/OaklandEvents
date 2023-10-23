@@ -232,6 +232,20 @@ def bustCanvasCache():
     canvasCache.cache(session['username'], instructure.getAssignmentsDueWithinDays(CANVAS_API_KEY, CANVAS_DAYS_THRESHOLD))
     return jsonResp({"status": "ok"}, 200)
     
+@app.route("/transport")
+def transit():
+    # Closest BART to Mills is Fruitvale or Coliseum
+    # Closest AC Transit Buses are 57 & NL
+    def busToMacArthur():
+        # 57 Bus
+        return
+    def busToSF():
+        # NL Bus
+        return {}
+    def trainToSF():
+        # To Embarcadero
+        return {}
+    return render_template("tranist.html")
 
 if __name__ == '__main__':
     app.run(port=5000, host='0.0.0.0')

@@ -247,22 +247,22 @@ def homeAPI():
         
         for bus in r:
             print(bus)
-            if bus["routeName"] == "57":
+            if bus["RouteName"] == "57":
                 fiveseven.append(bus)
-            if bus["routeName"] == "NL":
+            if bus["RouteName"] == "NL":
                 nl.append(bus)
         
         for bus57 in fiveseven:
             tripID = bus57["TripId"]
             for trips in a:
                 if tripID == trips["TripId"]:
-                    fiveseven_format.append({"direction": trips["direction"], "time": bus57["PredictedDeparture"]})
+                    fiveseven_format.append({"direction": trips["Direction"], "time": bus57["PredictedDeparture"]})
 
         for busNL in nl:
             tripID = busNL["TripId"]
             for trips in a:
                 if tripID == trips["TripId"]:
-                    nl_format.append({"direction": trips["direction"], "time": busNL["PredictedDeparture"]})
+                    nl_format.append({"direction": trips["Direction"], "time": busNL["PredictedDeparture"]})
 
         return {"57": fiveseven_format, "NL": nl_format}
     def trainToSF():

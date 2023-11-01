@@ -246,6 +246,7 @@ def homeAPI():
         nl_format = []
         
         for bus in r:
+            print(bus)
             if bus["routeName"] == "57":
                 fiveseven.append(bus)
             if bus["routeName"] == "NL":

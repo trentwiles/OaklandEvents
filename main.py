@@ -235,9 +235,10 @@ def bustCanvasCache():
     
 @app.route("/", methods=["POST"])
 def homeAPI():
-    ac_api = json.loads(open("config.json").read())["actransit"]
+    
     # Transit API
     def bus():
+        ac_api = json.loads(open("config.json").read())["actransit"]
         a = requests.get(f"https://api.actransit.org/transit/route/57/trips/?token={ac_api}").json()
         r = requests.get(f"https://api.actransit.org/transit/stops/52277/predictions/?token={ac_api}").json()
         fiveseven = []
@@ -266,9 +267,39 @@ def homeAPI():
 
         return {"57": fiveseven_format, "NL": nl_format}
     def trainToSF():
-        # To Embarcadero
-        return
-    return Response(json.dumps(bus()), content_type="application/json")
+        mcar = requests.get("https://bart.trentwil.es/api/v1/getPredictions/MCAR").json()
+        rock = requests.get("https://bart.trentwil.es/api/v1/getPredictions/MCAR").json()
+        pow = requests.get("https://bart.trentwil.es/api/v1/getPredictions/POWL").json()
+        
+        # To SF
+        # Lines going towards SF are Daly City, Millbrae, SF Airport
+        to_sf = []
+        to_oak = []
+
+        valid_lines = ["Daly City", "Millbrae", "SF Airport"]
+        valid_lines_to_oakland = ["Antioch", "Richmond"]
+
+        for train in mcar["estimates"]:
+            if train["lineTerminus"] in valid_lines:
+                to_sf.append({"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]})
+        for train in rock["estimates"]:
+            if train["lineTerminus"] in valid_lines:
+                to_sf.append({"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]})
+
+        # From SF
+        for train in pow["estimates"]:
+            if train["lineTerminus"] in valid_lines_to_oakland:
+                to_oak.append({"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]})
+
+        return {"to_sf": to_sf, "to_oak": to_oak}
+    
+
+    if request.form.get("mode") == "bus":
+        return Response(json.dumps(bus()), content_type="application/json")
+    if request.form.get("mode") == "train":
+        return Response(json.dumps(trainToSF()), content_type="application/json")
+    
+    return Response(json.dumps({"error": True, "message": "400 Bad Request"}), content_type="application/json"), 400
 
 if __name__ == '__main__':
     app.run(port=5003, host='0.0.0.0')

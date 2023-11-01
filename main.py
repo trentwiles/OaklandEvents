@@ -273,25 +273,26 @@ def homeAPI():
         
         # To SF
         # Lines going towards SF are Daly City, Millbrae, SF Airport
-        to_sf = []
-        to_oak = []
+        to_sf_mcar = []
+        to_sf_rock = []
+        to_oak_pow = []
 
         valid_lines = ["Daly City", "Millbrae", "SF Airport"]
         valid_lines_to_oakland = ["Antioch", "Richmond"]
 
         for train in mcar["estimates"]:
             if train["lineTerminus"] in valid_lines:
-                to_sf.append({"MacArthur": {"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]}})
+                to_sf_mcar.append({"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]})
         for train in rock["estimates"]:
             if train["lineTerminus"] in valid_lines:
-                to_sf.append({"Rockridge": {"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]}})
+                to_sf_rock.append({"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]})
 
         # From SF
         for train in pow["estimates"]:
             if train["lineTerminus"] in valid_lines_to_oakland:
-                to_oak.append({"Powel Street": {"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]}})
+                to_oak_pow.append({"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]})
 
-        return {"to_sf": to_sf, "to_oak": to_oak}
+        return {"to_sf": {"MacArthur": to_sf_mcar, "Rockridge": to_sf_rock}, "to_oak": {"Powel Street": to_oak_pow}}
     
 
     if request.form.get("mode") == "bus":

@@ -281,15 +281,15 @@ def homeAPI():
 
         for train in mcar["estimates"]:
             if train["lineTerminus"] in valid_lines:
-                to_sf.append({"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]})
+                to_sf.append({"MacArthur": {"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]}})
         for train in rock["estimates"]:
             if train["lineTerminus"] in valid_lines:
-                to_sf.append({"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]})
+                to_sf.append({"Rockridge": {"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]}})
 
         # From SF
         for train in pow["estimates"]:
             if train["lineTerminus"] in valid_lines_to_oakland:
-                to_oak.append({"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]})
+                to_oak.append({"Powel Street": {"lineTerminus": train["lineTerminus"], "estimates": train["estimates"]}})
 
         return {"to_sf": to_sf, "to_oak": to_oak}
     

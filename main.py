@@ -6,6 +6,7 @@ import random
 import time
 import instructure
 import canvasCache
+import requests
 
 app = Flask(__name__)
 app.secret_key = json.loads(open('config.json').read())["secret_key"]
@@ -232,20 +233,41 @@ def bustCanvasCache():
     canvasCache.cache(session['username'], instructure.getAssignmentsDueWithinDays(CANVAS_API_KEY, CANVAS_DAYS_THRESHOLD))
     return jsonResp({"status": "ok"}, 200)
     
-@app.route("/transport")
-def transit():
-    # Closest BART to Mills is Fruitvale or Coliseum
-    # Closest AC Transit Buses are 57 & NL
-    def busToMacArthur():
-        # 57 Bus
-        return
-    def busToSF():
-        # NL Bus
-        return {}
+@app.route("/", methods=["POST"])
+def homeAPI():
+    ac_api = json.loads(open("config.json").read())["actransit"]
+    # Transit API
+    def bus():
+        a = requests.get(f"https://api.actransit.org/transit/route/57/trips/?token={ac_api}").json()
+        r = requests.get(f"https://api.actransit.org/transit/stops/52277/predictions/?token={ac_api}").json()
+        fiveseven = []
+        fiveseven_format = []
+        nl = []
+        nl_format = []
+        
+        for bus in r:
+            if r["routeName"] == "57":
+                fiveseven.append(bus)
+            if r["routeName"] == "NL":
+                nl.append(bus)
+        
+        for bus57 in fiveseven:
+            tripID = bus57["TripId"]
+            for trips in a:
+                if tripID == trips["TripId"]:
+                    fiveseven_format.append({"direction": trips["direction"], "time": bus57["PredictedDeparture"]})
+
+        for busNL in nl:
+            tripID = busNL["TripId"]
+            for trips in a:
+                if tripID == trips["TripId"]:
+                    nl_format.append({"direction": trips["direction"], "time": busNL["PredictedDeparture"]})
+
+        return {"57": fiveseven_format, "NL": nl_format}
     def trainToSF():
         # To Embarcadero
-        return {}
-    return render_template("tranist.html")
+        return
+    return Response(json.dumps(bus()), content_type="application/json")
 
 if __name__ == '__main__':
     app.run(port=5000, host='0.0.0.0')

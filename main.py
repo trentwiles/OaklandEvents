@@ -233,6 +233,10 @@ def bustCanvasCache():
     canvasCache.cache(session['username'], instructure.getAssignmentsDueWithinDays(CANVAS_API_KEY, CANVAS_DAYS_THRESHOLD))
     return jsonResp({"status": "ok"}, 200)
     
+@app.route("/transit")
+def transit():
+    return render_template("transit.html")
+
 @app.route("/", methods=["POST"])
 def homeAPI():
     

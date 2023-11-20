@@ -244,6 +244,7 @@ def homeAPI():
     def bus():
         ac_api = json.loads(open("config.json").read())["actransit"]
         a = requests.get(f"https://api.actransit.org/transit/route/57/trips/?token={ac_api}").json()
+        b = requests.get(f"https://api.actransit.org/transit/route/NL/trips/?token={ac_api}").json()
         r = requests.get(f"https://api.actransit.org/transit/stops/52277/predictions/?token={ac_api}").json()
         fiveseven = []
         fiveseven_format = []
@@ -251,7 +252,6 @@ def homeAPI():
         nl_format = []
         
         for bus in r:
-            print(bus)
             if bus["RouteName"] == "57":
                 fiveseven.append(bus)
             if bus["RouteName"] == "NL":
@@ -265,7 +265,7 @@ def homeAPI():
 
         for busNL in nl:
             tripID = busNL["TripId"]
-            for trips in a:
+            for trips in b:
                 if tripID == trips["TripId"]:
                     nl_format.append({"direction": trips["Direction"], "time": busNL["PredictedDeparture"]})
 

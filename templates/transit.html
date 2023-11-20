@@ -44,27 +44,30 @@
     </table>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
-        function update(type, busName, field) {
-            $.post('/', {"mode": type}, function (data) {
+        $.post('/', { "mode": "bus" }, function (data) {
+
+            function update(dat, type, busName, field) {
                 // 57 to MacArthur
+                console.log(dat)
                 var f7 = ""
-                for(let item of data[busName]){
+                for (let item of dat[busName]) {
                     const givenDate = new Date(item["time"]);
                     const curDate = new Date()
-                    const t = Math.floor((givenDate - curDate)/(60 * 1000))
+                    const t = Math.floor((givenDate - curDate) / (60 * 1000))
 
                     f7 += "" + t + ","
                 }
 
-                if (data.length == 0){
+                if (dat[busName].length == 0) {
                     document.getElementById(field).innerHTML = "No depatures at the moment"
-                }else{
-                    document.getElementById(field).innerHTML = f7.substring(0, f7.length-1)
+                } else {
+                    document.getElementById(field).innerHTML = f7.substring(0, f7.length - 1)
                 }
-            })
-        }
-        update("bus", "57", "optionOne")
-        update("bus", "NL", "optionTwo")
+            }
+            update(data, "bus", "57", "optionOne")
+            update(data, "bus", "NL", "optionTwo")
+        })
+
     </script>
 
 </section>

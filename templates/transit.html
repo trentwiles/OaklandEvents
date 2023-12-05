@@ -68,6 +68,18 @@
             update(data, "bus", "NL", "optionTwo")
         })
 
+        $.post('/', { "mode": "train" }, function (data) {
+            function update(to, train, field){
+                // to = to_sf or to_oak
+                dat = data[to]
+                if(dat.length == 0){
+                    document.getElementById(field).innerHTML = "No depatures at the moment"
+                }else{
+                    document.getElementById(field).innerHTML = "No depatures at the moment"
+                }
+            }
+        })
+
     </script>
 
 </section>
